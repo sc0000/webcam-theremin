@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-
+import './hand.css'
 import * as tf from '@tensorflow/tfjs'
 import * as handpose from '@tensorflow-models/handpose'
 import Webcam from 'react-webcam'
@@ -40,26 +40,29 @@ const Hand = () => {
         const hand = await net.estimateHands(video);
 
         // Draw to canvas
-        const ctx = canvasRef.current.getContext("2d");
-        drawHand(hand, ctx);
+        drawHand(hand);
       }
   }
 
-  const drawHand = async (predictions, ctx) => {
+  const drawHand = async (predictions) => {
+    const ctx = canvasRef.current.getContext("2d");
+
     if (predictions.length > 0) {
       predictions.forEach((p) => {
         const landmarks = p.landmarks;
         
         for (let i = 0; i < landmarks.length; ++i) {
-          const x = landmarks[i][0];
+          const x = canvasRef.current.width - landmarks[i][0];
           const y = landmarks[i][1];
-
-          ctx.beginPath();
-          ctx.arc(x, y, 5, 0, 3 * Math.PI);
 
           ctx.fillStyle = getComputedStyle(document.documentElement)
             .getPropertyValue('--color-2');
-          ctx.fill();
+
+          ctx.fillRect(x, y, 2, 2);
+
+          // ctx.beginPath();
+          // ctx.arc(x, y, 1, 0, 3 * Math.PI);
+          // ctx.fill();
         }
       });
     }
@@ -69,7 +72,7 @@ const Hand = () => {
 
   return (
     <section id="hand">
-        Hand
+      <h3>Hand</h3>
         <Webcam ref={webcamRef} width={0} height={0} />
         <canvas ref={canvasRef} />
 
