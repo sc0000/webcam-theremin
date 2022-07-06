@@ -1,10 +1,12 @@
 import React, { useRef } from 'react'
-import './hand.css'
+
 import * as tf from '@tensorflow/tfjs'
 import * as handpose from '@tensorflow-models/handpose'
 import Webcam from 'react-webcam'
 import { HandDetector } from '@tensorflow-models/handpose/dist/hand'
 
+import './hand.css'
+import { scale, fixDPI } from './utilities'
 
 
 const Hand = () => {
@@ -35,16 +37,17 @@ const Hand = () => {
         // Set size of canvas ???
         canvasRef.current.width = videoWidth;
         canvasRef.current.height = videoHeight;
+        fixDPI(canvasRef.current);
 
         // Make detections
         const hand = await net.estimateHands(video);
 
         // Draw to canvas
-        drawHand(hand);
+        drawHand(hand, videoWidth, videoHeight);
       }
   }
 
-  const drawHand = async (predictions) => {
+  const drawHand = async (predictions, videoWidth, videoHeight) => {
     const ctx = canvasRef.current.getContext("2d");
 
     if (predictions.length > 0) {
@@ -52,17 +55,16 @@ const Hand = () => {
         const landmarks = p.landmarks;
         
         for (let i = 0; i < landmarks.length; ++i) {
-          const x = canvasRef.current.width - landmarks[i][0];
-          const y = landmarks[i][1];
+          // const x = canvasRef.current.width - landmarks[i][0];
+          // const y = landmarks[i][1];
+
+          const x = canvasRef.current.width - scale(landmarks[i][0], [0, videoWidth], [0, canvasRef.current.width]);
+          const y = scale(landmarks[i][1], [0, videoHeight * 1.2], [0, canvasRef.current.height]);
 
           ctx.fillStyle = getComputedStyle(document.documentElement)
             .getPropertyValue('--color-2');
 
-          ctx.fillRect(x, y, 2, 2);
-
-          // ctx.beginPath();
-          // ctx.arc(x, y, 1, 0, 3 * Math.PI);
-          // ctx.fill();
+          ctx.fillRect(x, y, 8, 8);
         }
       });
     }
