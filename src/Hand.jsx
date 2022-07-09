@@ -7,6 +7,7 @@ import { HandDetector } from '@tensorflow-models/handpose/dist/hand'
 
 import './hand.css'
 import { scale, lerp, fixDPI } from './utilities'
+import audio from './Audio'
 import { rand } from '@tensorflow/tfjs'
 
 
@@ -37,12 +38,8 @@ const Hand = () => {
         const videoWidth = video.videoWidth;
         const videoHeight = video.videoHeight;
 
-        // Set size of canvas ???
-        // canvasRef.current.width = videoWidth;
-        // canvasRef.current.height = videoHeight;
-        // canvasRef.current.height = window.innerHeight - 20;
+        // Scale canvas to prevent blur
         fixDPI(canvasRef.current);
-
       
         // Make detections
         const hand = await net.estimateHands(video);
@@ -64,13 +61,6 @@ const Hand = () => {
 
         // Draw to canvas
         drawHand(hand, videoWidth, videoHeight);
-
-        // console.log(`canvas width: ${canvasRef.current.width}`);
-        // console.log(`canvas height: ${canvasRef.current.height}`);
-
-        // console.log(coordinates[0].x);
-        // console.log(coordinates[0].y);
-        
       }
   }
 
@@ -87,9 +77,6 @@ const Hand = () => {
         const landmarks = p.landmarks;
         
         for (let i = 0; i < landmarks.length; ++i) {
-          // const targetX = canvasRef.current.width - scale(landmarks[i][0], [0, videoWidth], [0, canvasRef.current.width]);
-          // const targetY = scale(landmarks[i][1], [0, videoHeight * 1.2], [0, canvasRef.current.height]);
-
           // TODO: Find out why the canvas is twice as high as it should be
           const targetX = canvasRef.current.width - scale(landmarks[i][0], [0, videoWidth], [0, canvasRef.current.width]);
           const targetY = scale(landmarks[i][1], [0, videoHeight], [0, canvasRef.current.height / 2]);
@@ -101,7 +88,10 @@ const Hand = () => {
           coordinates[i].size = lerp(coordinates[i].size, targetSize, 0.01);
 
           ctx.fillRect(coordinates[i].x,  coordinates[i].y, coordinates[i].size, coordinates[i].size);
-          console.log(landmarks[i][2]);
+
+          // Update corresponding oscillator pitch
+          const targetPitch = 880 - scale(coordinates[i].y, [0, canvasRef.current.height / 2], [220, 880]);
+          audio.updatePitch(audio.oscillators[i], targetPitch);
         }
       });
     }
@@ -111,11 +101,7 @@ const Hand = () => {
       console.log(`canvas height: ${canvasRef.current.height}`);
 
       for (let i = 0; i < 21; ++i) {
-        // const x = canvasRef.current.width - scale(landmarks[i][0], [0, videoWidth], [0, canvasRef.current.width]);
-        // const y = scale(landmarks[i][1], [0, videoHeight * 1.2], [0, canvasRef.current.height]);
-        
-        // const x = lerp(coordinates[i].x, 10, 0.01);
-        coordinates[i].angle += Math.PI * 0.01;
+        coordinates[i].angle += Math.PI * 0.005;
 
         const targetX = (canvasRef.current.width / 2) - Math.sin(coordinates[i].angle) * 300;
         const targetY = (canvasRef.current.height / 4) - Math.cos(coordinates[i].angle) * 300;
