@@ -1,3 +1,5 @@
+import {useState, useEffect} from 'react';
+
 export const scale = (value, [inMin, inMax], [outMin, outMax]) => {
     return (value - inMin) / (inMax - inMin) * (outMax - outMin) + outMin;
 }
@@ -16,3 +18,26 @@ export const fixDPI = (canvas) => {
     canvas.setAttribute('height', styleHeight * dpi);
     canvas.setAttribute('width', styleWidth * dpi);
   }
+
+  const getWindowDimensions = () => {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    return { width, height };
+}
+
+export const useWindowDimensions = () => {
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+    useEffect(() => {
+        const handleResize = () => {
+            setWindowDimensions(getWindowDimensions());
+        }
+
+        window.addEventListener('resize', handleResize);
+
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return windowDimensions;
+}

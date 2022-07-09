@@ -23,7 +23,7 @@ const Hand = () => {
     // Loop and detect hands
     setInterval(() => {
       detect(net);
-    }, 50);
+    }, 100);
   }
   
   const detect = async (net) => {
@@ -38,9 +38,9 @@ const Hand = () => {
         const videoHeight = video.videoHeight;
 
         // Set size of canvas ???
-        canvasRef.current.width = videoWidth;
+        // canvasRef.current.width = videoWidth;
         // canvasRef.current.height = videoHeight;
-        canvasRef.current.height = window.innerHeight - 20;
+        // canvasRef.current.height = window.innerHeight - 20;
         fixDPI(canvasRef.current);
 
       
@@ -50,9 +50,10 @@ const Hand = () => {
         if (coordinates.length === 0) {
           for (let i = 0; i < 21; ++i) {
             const c = {
-              x: 500,
-              y: 500,
+              x: 0,
+              y: 0,
               size: 8,
+              angle: 2 * Math.PI * Math.random(), 
             }
         
             coordinates.push(c);
@@ -63,7 +64,7 @@ const Hand = () => {
 
         // Draw to canvas
         drawHand(hand, videoWidth, videoHeight);
-        
+
         // console.log(`canvas width: ${canvasRef.current.width}`);
         // console.log(`canvas height: ${canvasRef.current.height}`);
 
@@ -86,8 +87,12 @@ const Hand = () => {
         const landmarks = p.landmarks;
         
         for (let i = 0; i < landmarks.length; ++i) {
+          // const targetX = canvasRef.current.width - scale(landmarks[i][0], [0, videoWidth], [0, canvasRef.current.width]);
+          // const targetY = scale(landmarks[i][1], [0, videoHeight * 1.2], [0, canvasRef.current.height]);
+
+          // TODO: Find out why the canvas is twice as high as it should be
           const targetX = canvasRef.current.width - scale(landmarks[i][0], [0, videoWidth], [0, canvasRef.current.width]);
-          const targetY = scale(landmarks[i][1], [0, videoHeight * 1.2], [0, canvasRef.current.height]);
+          const targetY = scale(landmarks[i][1], [0, videoHeight], [0, canvasRef.current.height / 2]);
           
           coordinates[i].x = lerp(coordinates[i].x, targetX, 0.1);
           coordinates[i].y = lerp(coordinates[i].y, targetY, 0.1);
@@ -102,14 +107,21 @@ const Hand = () => {
     }
 
     else {
-      console.log('no hand');
+      console.log(`canvas width: ${canvasRef.current.width}`);
+      console.log(`canvas height: ${canvasRef.current.height}`);
 
       for (let i = 0; i < 21; ++i) {
         // const x = canvasRef.current.width - scale(landmarks[i][0], [0, videoWidth], [0, canvasRef.current.width]);
         // const y = scale(landmarks[i][1], [0, videoHeight * 1.2], [0, canvasRef.current.height]);
         
         // const x = lerp(coordinates[i].x, 10, 0.01);
-        coordinates[i].y = lerp(coordinates[i].y, 750, 0.001);
+        coordinates[i].angle += Math.PI * 0.01;
+
+        const targetX = (canvasRef.current.width / 2) - Math.sin(coordinates[i].angle) * 300;
+        const targetY = (canvasRef.current.height / 4) - Math.cos(coordinates[i].angle) * 300;
+
+        coordinates[i].x = lerp(coordinates[i].x, targetX, 0.1);
+        coordinates[i].y = lerp(coordinates[i].y, targetY, 0.1);
 
         ctx.fillRect(coordinates[i].x, coordinates[i].y, coordinates[i].size, coordinates[i].size);
       }
@@ -121,8 +133,8 @@ const Hand = () => {
   return (
     <section id="hand">
       <h3>Hand</h3>
-        <Webcam ref={webcamRef} width={0} height={0} />
-        <canvas ref={canvasRef} />
+      <Webcam ref={webcamRef} width={0} height={0} />
+      <canvas ref={canvasRef} />
 
     </section>
   )
