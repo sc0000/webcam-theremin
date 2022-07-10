@@ -41,3 +41,5 @@ export const useWindowDimensions = () => {
 
     return windowDimensions;
 }
+
+export let numberOfDivs = {n: 3};

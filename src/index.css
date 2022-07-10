@@ -13,6 +13,7 @@
 :root {
     --color-1: #006b38ff;
     --color-2: #101820ff;
+    --color-3: #0C7A45ff;
     --transition: all 200ms ease;
 }
 
@@ -21,11 +22,11 @@ body, div#root, div#root > div {
     color: var(--color-2);
     font-family: 'Press Start 2P', cursive;
     display: flex;
-    flex-direction: row;
+    /* flex-direction: column; */
     flex-wrap: nowrap;
     width: 100vw;
     height: 100vh;
-    overflow: hidden;
+    overflow: -moz-hidden-unscrollable;
 }
 
 #hand {
@@ -33,6 +34,8 @@ body, div#root, div#root > div {
     height: 100vw;
     background-color: var(--color-1);
     color: var(--color-2);
+    /* position: absolute;
+    float: left; */
     /* display: flex;
     flex-direction: row;
     justify-content: center; */
@@ -41,14 +44,16 @@ body, div#root, div#root > div {
 #controls {
     width: 30vw;
     height: 100vw;
+    /* position: absolute;
+    float: right; */
     background-color: var(--color-2);
     color: var(--color-1);
 }
 
-section > h3, section > div {
+h3, section > div {
     width: 100%;
     height: max-content;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
     margin-bottom: 0.5rem;
     justify-content: center;
     text-align: center;
@@ -58,14 +63,13 @@ section > h3, section > div {
 }
 
 .btn {
-    width: 100%;
+    width: max-content;
     justify-content: center;
     height: max-content;
     display: inline-grid;
     color: var(--color-1);
     background: var(--color-2);
-    padding: 0.75rem 1.2rem;
-    margin: 0.5rem;
+    
     cursor: pointer;
     border: 3px solid var(--color-1);
     transition: var(--transition);
@@ -75,4 +79,30 @@ section > h3, section > div {
     background: var(--color-1);
     color: var(--color-2);
     border-color: transparent;
+}
+
+.btn-controls {
+    margin: 0.5rem;
+    padding: 0.75rem 1.2rem;
+}
+
+.btn-controls:hover {
+    border-color: transparent;
+}
+
+.btn-hand {
+    margin: 1rem, 0.3rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.5rem;
+    float: left;
+}
+
+.btn-hand:hover {
+    border: 3px solid var(--color-2);
+}
+
+.btn-hand-active {
+    background: var(--color-1);
+    color: var(--color-2);
+    border: 3px solid var(--color-2);
 }
