@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import './dropdownMenu.css'
 
+// TODO: Rename this component!
 const DropdownMenu = () => {
     const [activePitch, setActivePitch] = useState('C');
 
@@ -10,7 +11,7 @@ const DropdownMenu = () => {
     <div className="dropdown-menu">
             {pitches.map((p) => {
                 return (
-                    <div onClick={() => setActivePitch(p)} className={activePitch === p ? "btn-pitch btn-pitch-active" : "btn-pitch"}>{p}</div>
+                    <div onClick={() => {setActivePitch(p)}} className={activePitch === p ? "btn-pitch btn-pitch-active" : "btn-pitch"}>{p}</div>
                 );
             })}
     </div>

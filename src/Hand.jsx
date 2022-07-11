@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 
 import * as tf from '@tensorflow/tfjs'
 import * as handpose from '@tensorflow-models/handpose'
@@ -7,10 +7,11 @@ import { HandDetector } from '@tensorflow-models/handpose/dist/hand'
 import { rand } from '@tensorflow/tfjs'
 
 import './hand.css'
-import { scale, lerp, fixDPI, numberOfDivs } from './utilities'
+import { scale, lerp, fixDPI, numberOfDivs, randomInt, pitches, heightVals } from './utilities'
 import audio from './Audio'
-import Dropdown from './Dropdown'
-import DropdownMenu from './DropdownMenu'
+// import Dropdown from './Dropdown'
+// import DropdownMenu from './DropdownMenu'
+import Subdivision from './Subdivision'
 
 
 
@@ -20,15 +21,33 @@ const Hand = () => {
 
   const [num, setNum] = useState(1);
 
+  useEffect(() => {
+    // const subdivs = document.querySelectorAll('.subdiv');
+    // for (let i = 0; i < num; ++i) {
+    //   heightVals[i] = subdivs[i].getBoundingClientRect.y;
+    // }
+    heightVals.splice(0, heightVals.length);
+    document.querySelectorAll('.subdiv').forEach((s) => {
+      heightVals.push(s.getBoundingClientRect().y);
+      // console.log(`y: ${s.getBoundingClientRect().y}`);
+    });
+
+    console.clear();
+    console.log(heightVals);
+    
+  }, [num]);
+
   const coordinates = [];
 
   let net = null;
 
   const runHandpose = async () => {
+    // TODO: Find better way to prevent reloading of the model
     if (num === 1) {
       net = await handpose.load();
       console.log("Hand recognition model loaded");
-  }
+    }
+
     // Loop and detect hands
     setInterval(() => {
       detect(net);
@@ -65,7 +84,8 @@ const Hand = () => {
           }
         }
 
-        // console.clear();
+        console.clear();
+        console.log(pitches);
 
         // Draw to canvas
         drawHand(hand, videoWidth, videoHeight);
@@ -74,20 +94,21 @@ const Hand = () => {
 
   const drawHand = async (predictions, videoWidth, videoHeight) => {
     const ctx = canvasRef.current.getContext("2d");
+
     ctx.fillStyle = getComputedStyle(document.documentElement)
             .getPropertyValue('--color-2');
+
     ctx.strokeStyle = getComputedStyle(document.documentElement)
             .getPropertyValue('--color-3');
+
     ctx.lineWidth = 3;
     ctx.lineCap = 'square';
 
     if (predictions.length > 0) {
       predictions.forEach((p) => {
-        // console.log(p);
         const landmarks = p.landmarks;
         
         for (let i = 0; i < landmarks.length; ++i) {
-          // TODO: Find out why the canvas is twice as high as it should be
           const targetX = canvasRef.current.width - scale(landmarks[i][0], [0, videoWidth], [0, canvasRef.current.width]);
           const targetY = scale(landmarks[i][1], [0, videoHeight], [0, canvasRef.current.height]);
           
@@ -99,19 +120,21 @@ const Hand = () => {
 
           ctx.fillRect(coordinates[i].x,  coordinates[i].y, coordinates[i].size, coordinates[i].size);
 
+          for (let j = 0; j < heightVals.length; ++j) {
+            if (coordinates[i].y > heightVals[j]) {
+              audio.oscillators[i].set({frequency: `${pitches[j]}${randomInt(audio.octaveSpread.min, audio.octaveSpread.max)}`});
+            }
+          }
+
           // Update corresponding oscillator pitch
-          // TODO: Move into own function!
-          updatePitch(i);
-          // const targetPitch = 880 - scale(coordinates[i].y, [0, canvasRef.current.height], [220, 880]);
-          // audio.updatePitch(audio.oscillators[i], targetPitch);
+          // updatePitch(i);
+
+          
         }
       });
     }
 
     else {
-      console.log(`canvas width: ${canvasRef.current.width}`);
-      console.log(`canvas height: ${canvasRef.current.height}`);
-
       for (let i = 0; i < 21; ++i) {
         coordinates[i].angle += Math.PI * 0.005;
 
@@ -125,14 +148,13 @@ const Hand = () => {
 
         // Update corresponding oscillator pitch
         updatePitch(i);
-        // const targetPitch = 880 - scale(coordinates[i].y, [0, canvasRef.current.height], [220, 880]);
-        // audio.updatePitch(audio.oscillators[i], targetPitch);
-
-        
       }
     }
+
+    
   }
 
+  // TODO: Move into Audio.js
   const updatePitch = (iterator) => {
     const targetPitch = 880 - scale(coordinates[iterator].y, [0, canvasRef.current.height], [220, 880]);
         audio.updatePitch(audio.oscillators[iterator], targetPitch);
@@ -140,57 +162,53 @@ const Hand = () => {
 
   runHandpose();
 
-  const createSubDivs = (n) => {
-    let subDivs = [];
+
+  const [pitch, setPitch] = useState('C');
+
+  const createSubdivs = (n) => {
+    let subdivs = [];
 
     for (let i = 0; i < n; ++i) {
-      subDivs.push(
-        <div className="subdiv">
-          {/* <Dropdown>
-            <DropdownMenu/>
-          </Dropdown>  */}
+      const sendPitch = (p) => {
+          setPitch(p);
+          pitches[i] = p;
+      } 
 
-          <DropdownMenu/>
-        </div>
+      subdivs.push(
+        <Subdivision sendPitch={sendPitch}/>
       );
+
+
+      // console.clear();
+      // console.log(pitches);
     }
 
-    return subDivs;
+    return subdivs;
   }
+
+
 
   return (
     <section id="hand">
       <div className="header">
         <h3>Hand</h3>
         <div className="set-subs">
-          <div className="btn btn-hand" onClick={() => {setNum(num + 1)}}>+</div>
+          <div className="btn btn-hand" onClick={() => {
+            setNum(num + 1)}}>+</div>
           <div className="btn btn-hand" onClick={() => {setNum(num - 1)}}>-</div>
         </div>
       </div>
       
       <Webcam ref={webcamRef} width={0} height={0} />
+
       <div className="container">
         <canvas ref={canvasRef} />
         <div className="subdivs">
-          {/* {[1, 2].map((n) => {
-            return (
-              <div className="subdiv">
-            <Dropdown>
-              <DropdownMenu/>
-            </Dropdown>
-            
-          </div>
-            )
-          })} */}
-
-          { createSubDivs(num) }
           
-        </div>
-        
+          { createSubdivs(num) }
+          
+        </div>        
       </div>
-      
-
-      
     </section>
   )
 }

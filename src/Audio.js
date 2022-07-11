@@ -4,11 +4,17 @@ import { lerp } from './utilities'
 class Audio {
     constructor() {
         this.oscillators = [];
+        this.distortions = [];
         for (let i = 0; i < 21; ++i) {
-            const osc = new Tone.Oscillator(Math.random() * 880, 'sine').toDestination();
-            osc.volume.value = -36;
+            const osc = new Tone.Oscillator(Math.random() * 880, 'square').toDestination();
+            osc.volume.value = -48;
             this.oscillators.push(osc);
           }
+
+        this.octaveSpread = {
+            min: 3, 
+            max: 6
+        };
     }
 
     start() {
@@ -17,6 +23,13 @@ class Audio {
 
     stop() {
         this.oscillators.forEach(o => o.stop());
+    }
+
+    setOctaveSpread(spread) {
+        this.octaveSpread = {
+            min: spread.min,
+            max: spread.max,
+        }
     }
 
     updatePitch(osc, targetPitch) {
