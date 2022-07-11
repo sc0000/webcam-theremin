@@ -4,13 +4,13 @@ import audio from './Audio'
 import './controls.css'
 
 const Controls = () => {
-  const [startButton, setStartButton] = useState('Start Audio');
+  const [startButton, setStartButton] = useState('start audio');
 
   const [octaveSpread, setOctaveSpread] = useState({min : 3, max: 6});
 
-  // useEffect = (() => {
-    
-  // }, [octaveSpread])
+  const [activeShape, setActiveShape] = useState('square');
+
+  const shapes = ['square', 'sine', 'triangle', 'sawtooth']
 
   const changeOctaveSpread = (m1, m2) => {
     setOctaveSpread({min: m1, max: m2});
@@ -18,13 +18,18 @@ const Controls = () => {
     console.log(audio.octaveSpread);
   }
 
+  const changeShape = (s) => {
+    setActiveShape(s);
+    audio.oscillators.forEach(o => o.type = s);
+  }
+
   return (
     <section id="controls">
         <h3>Controls</h3>
-        <div>
+        <div className="control-buttons">
           <div className="btn btn-controls" onClick={() => {
-            setStartButton(startButton == 'Stop Audio' ? 'Start Audio' : 'Stop Audio');
-            startButton == 'Start Audio' ? audio.start() : audio.stop();
+            setStartButton(startButton == 'stop audio' ? 'start audio' : 'stop audio');
+            startButton == 'start audio' ? audio.start() : audio.stop();
 
             }}>{startButton}
           </div>
@@ -41,9 +46,16 @@ const Controls = () => {
               <div className="btn btn-controls" onClick={() => changeOctaveSpread(octaveSpread.min + 1, octaveSpread.max)}>+</div>
               <div className="btn btn-controls" onClick={() => changeOctaveSpread(octaveSpread.min - 1, octaveSpread.max)}>-</div>
             </div>
-            
+
           </div>
           
+          <div>
+              {shapes.map((s) => {
+                  return (
+                      <div onClick={() => {changeShape(s)}} className={activeShape === s ? "btn btn-controls btn-controls-active" : "btn btn-controls"}>{s}</div>
+                  );
+              })}
+            </div>
         </div>
         
     </section>

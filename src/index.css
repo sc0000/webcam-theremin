@@ -90,6 +90,12 @@ h3, section > div {
     border-color: transparent;
 }
 
+.btn-controls-active {
+    background: var(--color-1);
+    color: var(--color-2);
+    border-color: transparent;
+}
+
 .btn-hand {
     margin: 1rem, 0.3rem;
     padding: 0.5rem 0.75rem;

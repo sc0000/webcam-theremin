@@ -18,17 +18,12 @@ const Hand = () => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
-  const [num, setNum] = useState(1);
+  const [num, setNum] = useState(0);
 
   useEffect(() => {
-    // const subdivs = document.querySelectorAll('.subdiv');
-    // for (let i = 0; i < num; ++i) {
-    //   heightVals[i] = subdivs[i].getBoundingClientRect.y;
-    // }
     heightVals.splice(0, heightVals.length);
     document.querySelectorAll('.subdiv').forEach((s) => {
       heightVals.push(s.getBoundingClientRect().y);
-      // console.log(`y: ${s.getBoundingClientRect().y}`);
     });
 
     console.clear();
@@ -42,9 +37,10 @@ const Hand = () => {
 
   const runHandpose = async () => {
     // TODO: Find better way to prevent reloading of the model
-    if (num === 1) {
+    if (num === 0) {
       net = await handpose.load();
       console.log("Hand recognition model loaded");
+      setNum(1);
     }
 
     // Loop and detect hands
@@ -150,10 +146,11 @@ const Hand = () => {
 
         // Update corresponding oscillator pitch
         updatePitch(i);
+
+        // TODO: Add to function
+        audio.oscillators[i].volume.value = scale(coordinates[i].x, [0, canvasRef.current.width], [-64, -48]);
       }
     }
-
-    
   }
 
   // TODO: Move into Audio.js
@@ -179,10 +176,6 @@ const Hand = () => {
       subdivs.push(
         <Subdivision sendPitch={sendPitch}/>
       );
-
-
-      // console.clear();
-      // console.log(pitches);
     }
 
     return subdivs;
