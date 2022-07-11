@@ -10,7 +10,6 @@ import './hand.css'
 import { scale, lerp, fixDPI, numberOfDivs, randomInt, pitches, heightVals } from './utilities'
 import audio from './Audio'
 // import Dropdown from './Dropdown'
-// import DropdownMenu from './DropdownMenu'
 import Subdivision from './Subdivision'
 
 
@@ -120,16 +119,19 @@ const Hand = () => {
 
           ctx.fillRect(coordinates[i].x,  coordinates[i].y, coordinates[i].size, coordinates[i].size);
 
+          //
+          // Update corresponding oscillator
+          //
+
           for (let j = 0; j < heightVals.length; ++j) {
             if (coordinates[i].y > heightVals[j]) {
-              audio.oscillators[i].set({frequency: `${pitches[j]}${randomInt(audio.octaveSpread.min, audio.octaveSpread.max)}`});
+              audio.oscillators[i].set({
+                frequency: `${pitches[j]}${randomInt(audio.octaveSpread.min, audio.octaveSpread.max)}`,
+                });
             }
           }
 
-          // Update corresponding oscillator pitch
-          // updatePitch(i);
-
-          
+          audio.oscillators[i].volume.value = scale(coordinates[i].x, [0, canvasRef.current.width], [-64, -48]);
         }
       });
     }
