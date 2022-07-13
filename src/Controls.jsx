@@ -1,26 +1,56 @@
 import React, { useState, useEffect } from 'react'
-import { numberOfDivs } from './utilities'
+import Player from './Player'
 import audio from './Audio'
 import './controls.css'
 
 const Controls = () => {
   const [startButton, setStartButton] = useState('start audio');
 
+  // Octave spread
   const [octaveSpread, setOctaveSpread] = useState({min : 3, max: 6});
-
-  const [activeShape, setActiveShape] = useState('square');
-
-  const shapes = ['square', 'sine', 'triangle', 'sawtooth']
 
   const changeOctaveSpread = (m1, m2) => {
     setOctaveSpread({min: m1, max: m2});
-    audio.setOctaveSpread(octaveSpread);
-    console.log(audio.octaveSpread);
   }
+
+  useEffect(() => {
+    audio.setOctaveSpread(octaveSpread);
+  }, [octaveSpread]);
+
+  // Wave shape
+  const [activeShape, setActiveShape] = useState('square');
+
+  const shapes = ['square', 'sine', 'triangle', 'sawtooth'];
 
   const changeShape = (s) => {
     setActiveShape(s);
     audio.oscillators.forEach(o => o.type = s);
+  }
+
+  // Record and play back
+  const [recordButton, setRecordButton] = useState('start recording');
+  const [numberOfPlayers, setNumberOfPlayers] = useState(0);
+  const [audioPlayers, setAudioPlayers] = useState([]);
+
+  const stopRecording = () => {
+    audio.stopRecording();
+    setNumberOfPlayers(numberOfPlayers + 1);
+  }
+
+  useEffect(() => {
+    setAudioPlayers([...audio.players]);
+  });
+
+  const createPlayers = (n) => {
+    let players = [];
+
+    for (let i = 0; i < n; ++i) {
+      players.push(
+        <Player p={audioPlayers[i]} />
+      )
+    }
+
+    return players;
   }
 
   return (
@@ -28,8 +58,8 @@ const Controls = () => {
         <h3>Controls</h3>
         <div className="control-buttons">
           <div className="btn btn-controls" onClick={() => {
-            setStartButton(startButton == 'stop audio' ? 'start audio' : 'stop audio');
-            startButton == 'start audio' ? audio.start() : audio.stop();
+            setStartButton(startButton === 'stop audio' ? 'start audio' : 'stop audio');
+            startButton === 'start audio' ? audio.start() : audio.stop();
 
             }}>{startButton}
           </div>
@@ -49,13 +79,26 @@ const Controls = () => {
 
           </div>
           
-          <div>
+          <div className="shapes">
               {shapes.map((s) => {
                   return (
                       <div onClick={() => {changeShape(s)}} className={activeShape === s ? "btn btn-controls btn-controls-active" : "btn btn-controls"}>{s}</div>
                   );
               })}
-            </div>
+          </div>
+
+          <div className="recording">
+              <div onClick={() => {
+                setRecordButton(recordButton === 'stop recording' ? 'start recording' : 'stop recording');
+                recordButton === 'start recording' ? audio.startRecording() : stopRecording();
+              }} 
+                className={recordButton === 'start recording' ? "btn btn-controls" : "btn btn-controls btn-controls-active"}>{recordButton}
+              </div>
+          </div>
+
+          <div className="players">
+            {createPlayers(numberOfPlayers)}
+          </div>
         </div>
         
     </section>

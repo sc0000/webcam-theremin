@@ -7,7 +7,7 @@ import { HandDetector } from '@tensorflow-models/handpose/dist/hand'
 import { rand } from '@tensorflow/tfjs'
 
 import './hand.css'
-import { scale, lerp, fixDPI, numberOfDivs, randomInt, pitches, heightVals } from './utilities'
+import { scale, lerp, fixDPI, randomInt, pitches, heightVals } from './utilities'
 import audio from './Audio'
 // import Dropdown from './Dropdown'
 import Subdivision from './Subdivision'
@@ -19,17 +19,6 @@ const Hand = () => {
   const canvasRef = useRef(null);
 
   const [num, setNum] = useState(0);
-
-  useEffect(() => {
-    heightVals.splice(0, heightVals.length);
-    document.querySelectorAll('.subdiv').forEach((s) => {
-      heightVals.push(s.getBoundingClientRect().y);
-    });
-
-    console.clear();
-    console.log(heightVals);
-    
-  }, [num]);
 
   const coordinates = [];
 
@@ -78,9 +67,6 @@ const Hand = () => {
             coordinates.push(c);
           }
         }
-
-        console.clear();
-        console.log(pitches);
 
         // Draw to canvas
         drawHand(hand, videoWidth, videoHeight);
@@ -161,15 +147,22 @@ const Hand = () => {
 
   runHandpose();
 
+  useEffect(() => {
+    heightVals.splice(0, heightVals.length);
+    document.querySelectorAll('.subdiv').forEach((s) => {
+      heightVals.push(s.getBoundingClientRect().y);
+    });
 
-  const [pitch, setPitch] = useState('C');
+    // console.clear();
+    // console.log(heightVals);
+    
+  }, [num]);
 
   const createSubdivs = (n) => {
     let subdivs = [];
 
     for (let i = 0; i < n; ++i) {
       const sendPitch = (p) => {
-          setPitch(p);
           pitches[i] = p;
       } 
 
@@ -180,8 +173,6 @@ const Hand = () => {
 
     return subdivs;
   }
-
-
 
   return (
     <section id="hand">

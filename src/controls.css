@@ -1,7 +1,6 @@
 .octave-spread {
     font-size: 0.7rem;
     display: flex;
-    
 }
 
 .control-buttons {
@@ -9,4 +8,10 @@
     flex-direction: column;
     grid-template-columns: auto;
     justify-content: center;
+}
+
+.shapes {
+    display: grid;
+    grid-template-columns: auto auto;
+    font-size: 0.8rem;
 }
