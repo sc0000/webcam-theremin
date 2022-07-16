@@ -10,7 +10,8 @@ import './hand.css'
 import { scale, lerp, fixDPI, randomInt, pitches, heightVals } from './utilities'
 import audio from './Audio'
 // import Dropdown from './Dropdown'
-import Subdivision from './Subdivision'
+import PitchArea from './PitchArea'
+
 
 
 const Hand = () => {
@@ -30,6 +31,7 @@ const Hand = () => {
       console.log("Hand recognition model loaded");
       setNum(1);
     }
+
 
     // Loop and detect hands
     setInterval(() => {
@@ -107,8 +109,10 @@ const Hand = () => {
           for (let j = 0; j < heightVals.length; ++j) {
             if (coordinates[i].y > heightVals[j]) {
               audio.oscillators[i].set({
-                frequency: `${pitches[j]}${randomInt(audio.octaveSpread.min, audio.octaveSpread.max)}`,
+                frequency: `${pitches[j].pitch}${randomInt(pitches[j].min, pitches[j].max)}`,
                 });
+
+              console.log(`${pitches[j].pitch}${randomInt(pitches[j].min, pitches[j].max)}`)
             }
           }
 
@@ -121,7 +125,7 @@ const Hand = () => {
       for (let i = 0; i < 21; ++i) {
         coordinates[i].angle += Math.PI * 0.005;
 
-        const targetX = (canvasRef.current.width / 2) - Math.sin(coordinates[i].angle) * 300;
+        const targetX = (canvasRef.current.width / 1.8) - Math.sin(coordinates[i].angle) * 300;
         const targetY = (canvasRef.current.height / 2) - Math.cos(coordinates[i].angle) * 300;
 
         coordinates[i].x = lerp(coordinates[i].x, targetX, 0.08);
@@ -157,20 +161,20 @@ const Hand = () => {
     
   }, [num]);
 
-  const createSubdivs = (n) => {
-    let subdivs = [];
+  const createPitchAreas = (n) => {
+    let pitchAreas = [];
 
     for (let i = 0; i < n; ++i) {
       const sendPitch = (p) => {
           pitches[i] = p;
       } 
 
-      subdivs.push(
-        <Subdivision sendPitch={sendPitch}/>
+      pitchAreas.push(
+        <PitchArea sendPitch={sendPitch}/>
       );
     }
 
-    return subdivs;
+    return pitchAreas;
   }
 
   return (
@@ -200,7 +204,7 @@ const Hand = () => {
         <canvas ref={canvasRef} />
         <div className="subdivs">
           
-          { createSubdivs(num) }
+          { createPitchAreas(num) }
           
         </div>        
       </div>

@@ -7,8 +7,8 @@ const Dropdown = (props) => {
 
   return (
     <div className="dropdown">
-        <div className={open ? "btn btn-hand btn-hand-active" : "btn btn-hand"} onClick={() => setOpen(!open)}>
-            Pitch
+        <div className={open ? "btn btn-hand" : "btn btn-pitch"} onClick={() => setOpen(!open)}>
+            octave 3-3
         </div>
 
         {open && props.children}

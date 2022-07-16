@@ -1,4 +1,5 @@
 import {useState, useEffect} from 'react';
+import * as handpose from '@tensorflow-models/handpose'
 
 export const scale = (value, [inMin, inMax], [outMin, outMax]) => {
     return (value - inMin) / (inMax - inMin) * (outMax - outMin) + outMin;

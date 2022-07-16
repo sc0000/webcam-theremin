@@ -1,0 +1,106 @@
+import React, { useState, useEffect } from 'react'
+import { randomInt } from './utilities';
+import Dropdown from './Dropdown';
+
+const PitchArea = ({sendPitch}) => {
+    const pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const [activePitch, setActivePitch] = useState(pitches[randomInt(0, 11)]);
+    
+
+    const [octaveSpread, setOctaveSpread] = useState(() => {
+        const init = randomInt(1, 8);
+        return {min: init, max: init};
+    });
+
+    sendPitch({pitch: activePitch, min: octaveSpread.min, max: octaveSpread.max});
+
+    const [lastMax, setLastMax] = useState(octaveSpread.max);
+
+    const [locked, setLocked] = useState(true);
+
+    const [range, setRange] = useState(`${octaveSpread.min}-${octaveSpread.max}`);
+
+    useEffect(() => {
+        // if locked, set both to min
+        if (locked){
+            setLastMax(octaveSpread.max);
+            setOctaveSpread({min: octaveSpread.min, max: octaveSpread.min});
+        }
+
+        if (!locked && lastMax > octaveSpread.max)
+            setOctaveSpread({min: octaveSpread.min, max: lastMax});
+
+    }, [locked]);
+
+    useEffect(() => {
+        setRange(`${octaveSpread.min}-${octaveSpread.max}`);
+        console.clear();
+        console.log(octaveSpread);
+
+        sendPitch({pitch: activePitch, min: octaveSpread.min, max: octaveSpread.max});
+    }, [octaveSpread]);
+
+    const maxSwitches = (l) => {
+        if (l) return;
+
+        else {
+            return (
+                <div>
+                    <div className="btn-pitch" onClick={() => setOctaveSpread({min: octaveSpread.min, max: octaveSpread.max + 1})}>+</div>
+                    <div className="btn-pitch" onClick={() => setOctaveSpread({
+                        min: (octaveSpread.min >= octaveSpread.max ? octaveSpread.min - 1 : octaveSpread.min), 
+                        max: octaveSpread.max - 1})}>-</div>
+                </div>
+            )
+        }
+    }
+
+  return (
+    <div className="subdiv">
+        <div className="selector">
+            {pitches.map((p) => {
+                return (
+                    <div onClick={() => {setActivePitch(p); sendPitch({pitch: p, min: octaveSpread.min, max: octaveSpread.max});}} className={activePitch === p ? "btn-pitch btn-pitch-active" : "btn-pitch"}>{p}</div>
+                );
+            })}
+        </div>
+
+        <div className="octave-spread">
+            <div className="btn-pitch btn-pitch-active" style={{cursor: "default"}}>oct {locked ? octaveSpread.min : range}</div>
+            <div className="btn-pitch" onClick={() => {
+                if (locked)
+                    setOctaveSpread({
+                        min: octaveSpread.min + 1, 
+                        max: octaveSpread.min + 1
+                    });
+
+                else 
+                    setOctaveSpread({
+                        min: octaveSpread.min + 1, 
+                        max: (octaveSpread.max <= octaveSpread.min ? octaveSpread.min + 1 : octaveSpread.max)
+                    });
+                }
+            }>+</div>
+
+            <div className="btn-pitch" onClick={() => {
+                if (locked)
+                    setOctaveSpread({
+                        min: octaveSpread.min - 1, 
+                        max: octaveSpread.min - 1
+                    });
+
+                else 
+                    setOctaveSpread({
+                        min: octaveSpread.min - 1, 
+                        max: octaveSpread.max
+                    });
+                }
+            }>-</div>
+            <div>{maxSwitches(locked)}</div>
+            <div className="btn-pitch" onClick={() => setLocked(!locked)}>{locked ? "unlock spread" : "lock"}</div>
+        </div>
+    </div>
+  )
+}
+
+export default PitchArea
