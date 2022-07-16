@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Player from './Player'
 import audio from './Audio'
 import './controls.css'
+import { randomInt } from './utilities'
 
 const Controls = () => {
   const [startButton, setStartButton] = useState('start audio');
@@ -19,7 +20,6 @@ const Controls = () => {
 
   // Wave shape
   const [activeShape, setActiveShape] = useState('square');
-
   const shapes = ['square', 'sine', 'triangle', 'sawtooth'];
 
   const changeShape = (s) => {
@@ -28,25 +28,12 @@ const Controls = () => {
   }
 
   // Record and play back
-  const [recordButton, setRecordButton] = useState('start recording');
-  const [numberOfPlayers, setNumberOfPlayers] = useState(0);
-  const [audioPlayers, setAudioPlayers] = useState([]);
-
-  const stopRecording = () => {
-    audio.stopRecording();
-    setNumberOfPlayers(numberOfPlayers + 1);
-  }
-
-  useEffect(() => {
-    setAudioPlayers([...audio.players]);
-  });
-
   const createPlayers = (n) => {
     let players = [];
 
     for (let i = 0; i < n; ++i) {
       players.push(
-        <Player p={audioPlayers[i]} />
+        <Player i={i} />
       )
     }
 
@@ -60,9 +47,9 @@ const Controls = () => {
           <div className="btn btn-controls" onClick={() => {
             setStartButton(startButton === 'stop audio' ? 'start audio' : 'stop audio');
             startButton === 'start audio' ? audio.start() : audio.stop();
-
             }}>{startButton}
           </div>
+          
           <div className="octave-spread">
             <div>
               <div>max oct {octaveSpread.max}</div>
@@ -87,17 +74,8 @@ const Controls = () => {
               })}
           </div>
 
-          <div className="recording">
-              <div onClick={() => {
-                setRecordButton(recordButton === 'stop recording' ? 'start recording' : 'stop recording');
-                recordButton === 'start recording' ? audio.startRecording() : stopRecording();
-              }} 
-                className={recordButton === 'start recording' ? "btn btn-controls" : "btn btn-controls btn-controls-active"}>{recordButton}
-              </div>
-          </div>
-
           <div className="players">
-            {createPlayers(numberOfPlayers)}
+            {createPlayers(8)}
           </div>
         </div>
         

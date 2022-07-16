@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
+import { randomInt } from './utilities';
 
 const Subdivision = ({sendPitch}) => {
-    const [activePitch, setActivePitch] = useState('C');
-
     const pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    const [activePitch, setActivePitch] = useState(pitches[randomInt(0, 11)]);
 
     sendPitch(activePitch);
 

@@ -8,12 +8,15 @@
     box-sizing: border-box;
     list-style: none;
     text-decoration: none;
+    user-select: none;
+    -moz-user-select: none;
 }
 
 :root {
     --color-1: #006b38ff;
     --color-2: #101820ff;
     --color-3: #0C7A45ff;
+    --color-4: #3a434cff;
     --transition: all 200ms ease;
 }
 
@@ -68,11 +71,11 @@ h3, section > div {
     height: max-content;
     display: inline-grid;
     color: var(--color-1);
-    background: var(--color-2);
-    
+    background: var(--color-2);  
     cursor: pointer;
     border: 3px solid var(--color-1);
     transition: var(--transition);
+    animation: fadeIn 0.4s;
 }
 
 .btn:hover {
@@ -212,4 +215,20 @@ h3, section > div {
     color: var(--color-1);
     border-color: transparent;
     border: 3px solid var(--color-2);
+}
+
+.btn-disabled {
+    width: max-content;
+    justify-content: center;
+    height: max-content;
+    display: inline-grid;
+    color: var(--color-4);
+    background: var(--color-2);
+    border: 3px solid var(--color-4);
+    margin: 0.2rem;
+    padding: 0.3rem 0.2rem;
+    transition: var(--transition);
+    animation: fadeIn 0.4s;
+    /* animation: fadeOut 0.05s; */
+    height: 37.2px;
 }

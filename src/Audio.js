@@ -35,23 +35,17 @@ class Audio {
         this.recorder.start();
     }
 
-    async stopRecording() {
+    async stopRecording(i) {
         const recording = await this.recorder.stop();
 
-        // TODO: create Players array, add new ones after stopping the recording. set cap.
-        // const player = await new Tone.Player(url).toDestination();
-        // player.autostart = false;
-        // player.loop = true;
-        
-
-        this.players.push(
-            new Tone.Player({
-                url: URL.createObjectURL(recording),
-                loop: true,
-                autostart: false,
-                fadeIn: 0.5,
-                fadeOut: 0.5,
-            }).toDestination());
+        this.players[i] = new Tone.Player({
+            url: URL.createObjectURL(recording),
+            loop: true,
+            autostart: false,
+            fadeIn: 0.5,
+            fadeOut: 0.5,
+            // reverse: true,
+        }).toDestination();
 
         console.log(`from audio.stopRecording(): ${this.players}`);
 

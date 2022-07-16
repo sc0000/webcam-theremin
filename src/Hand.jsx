@@ -13,7 +13,6 @@ import audio from './Audio'
 import Subdivision from './Subdivision'
 
 
-
 const Hand = () => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
@@ -177,12 +176,22 @@ const Hand = () => {
   return (
     <section id="hand">
       <div className="header">
-        <h3>Hand</h3>
         <div className="set-subs">
-          <div className="btn btn-hand" onClick={() => {
+          <div style={{
+              marginTop: "0.6rem", marginLeft: "0.3rem", fontSize: "1rem", padding: "0.rem", width: "3rem"
+            }}
+
+            className="btn btn-hand" onClick={() => {
             setNum(num + 1)}}>+</div>
-          <div className="btn btn-hand" onClick={() => {setNum(num - 1)}}>-</div>
+          <div style={{
+              marginTop: "0.6rem", marginLeft: "0.3rem", fontSize: "1rem", padding: "0.rem", width: "3rem"
+            }}
+            
+            className="btn btn-hand" onClick={() => {setNum(num - 1)}}>-</div>
         </div>
+
+        <h3>Hand</h3>
+        
       </div>
       
       <Webcam ref={webcamRef} width={0} height={0} />
