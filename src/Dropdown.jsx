@@ -3,17 +3,27 @@ import audio from './Audio'
 import './'
 import { randomInt } from './utilities';
 
-const Dropdown = ({iterator}) => {
-    const [open, setOpen] = useState(false);
+const Dropdown = ({iterator, activeDropdown, sendActivation}) => {
+  const [open, setOpen] = useState(false);
 
-    // Wave shape
-    const shapes = ['square', 'sine', 'triangle', 'sawtooth'];
-    const [activeShape, setActiveShape] = useState(shapes[randomInt(0, 3)]);
+  useEffect(() => {
+    if (activeDropdown != iterator) setOpen(false);
+  }, [activeDropdown]);
+  // if (activeDropdown != iterator) setOpen(false);
+
+  // Wave shape
+  const shapes = ['square', 'sine', 'triangle', 'sawtooth'];
+  const [activeShape, setActiveShape] = useState(shapes[randomInt(0, 3)]);
 
   useEffect(() => {
     audio.oscillators[iterator].type = activeShape;
     setOpen(false);
-  }, [activeShape])
+  }, [activeShape]);
+
+  useEffect(() => {
+    if (open)
+      sendActivation(iterator);
+  }, [open]);
 
   const createSelector = () => {
     return (<div className="shapes" style={{position: "absolute", width: "max-content", backgroundColor: "#101820ff"}}>

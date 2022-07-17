@@ -32,7 +32,6 @@ const Hand = () => {
       setNum(1);
     }
 
-
     // Loop and detect hands
     setInterval(() => {
       detect(net);
@@ -112,7 +111,7 @@ const Hand = () => {
                 frequency: `${pitches[j].pitch}${randomInt(pitches[j].min, pitches[j].max)}`,
                 });
 
-              console.log(`${pitches[j].pitch}${randomInt(pitches[j].min, pitches[j].max)}`)
+              // console.log(`${pitches[j].pitch}${randomInt(pitches[j].min, pitches[j].max)}`);
             }
           }
 
@@ -125,7 +124,7 @@ const Hand = () => {
       for (let i = 0; i < 21; ++i) {
         coordinates[i].angle += Math.PI * 0.005;
 
-        const targetX = (canvasRef.current.width / 1.8) - Math.sin(coordinates[i].angle) * 300;
+        const targetX = (canvasRef.current.width / 1.6) - Math.sin(coordinates[i].angle) * 300;
         const targetY = (canvasRef.current.height / 2) - Math.cos(coordinates[i].angle) * 300;
 
         coordinates[i].x = lerp(coordinates[i].x, targetX, 0.08);

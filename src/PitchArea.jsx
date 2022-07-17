@@ -99,7 +99,7 @@ const PitchArea = ({sendPitch}) => {
                 }
             }>-</div>
             <div>{maxSwitches(locked)}</div>
-            <div className="btn-pitch" onClick={() => setLocked(!locked)}>{locked ? "unlock spread" : "lock"}</div>
+            <div className="btn-pitch" onClick={() => setLocked(!locked)}>{locked ? "spread" : "unison"}</div>
         </div>
     </div>
   )
