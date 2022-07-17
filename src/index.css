@@ -33,7 +33,7 @@ body, div#root, div#root > div {
 }
 
 #hand {
-    width: 70vw;
+    width: 80vw;
     height: 100vw;
     background-color: var(--color-1);
     color: var(--color-2);
@@ -45,7 +45,7 @@ body, div#root, div#root > div {
 }
 
 #controls {
-    width: 30vw;
+    width: 20vw;
     height: 100vw;
     /* position: absolute;
     float: right; */
@@ -58,7 +58,7 @@ h3, section > div {
     height: max-content;
     margin-top: 1rem;
     margin-bottom: 0.5rem;
-    justify-content: center;
+    /* justify-content: center; */
     text-align: center;
     background: transparent;
     display: grid;

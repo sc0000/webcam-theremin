@@ -99,8 +99,8 @@ const Hand = () => {
 
           const targetSize = scale(Math.abs(landmarks[i][2]), [0, 80], [2, 32]);
           coordinates[i].size = lerp(coordinates[i].size, targetSize, 0.01);
-
-          ctx.fillRect(coordinates[i].x,  coordinates[i].y, coordinates[i].size, coordinates[i].size);
+          
+          ctx.fillRect(coordinates[i].x,  coordinates[i].y, coordinates[i].size, coordinates[i].size);          
 
           //
           // Update corresponding oscillator
@@ -170,7 +170,7 @@ const Hand = () => {
       } 
 
       pitchAreas.push(
-        <PitchArea sendPitch={sendPitch}/>
+        <PitchArea key={i*6} sendPitch={sendPitch}/>
       );
     }
 
@@ -206,7 +206,7 @@ const Hand = () => {
           
           { createPitchAreas(num) }
           
-        </div>        
+        </div>       
       </div>
     </section>
   )

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { randomInt } from './utilities';
-import Dropdown from './Dropdown';
+
+// TODO: Add boundaries for octave spread w/ greyed out buttons!
 
 const PitchArea = ({sendPitch}) => {
     const pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -30,15 +31,12 @@ const PitchArea = ({sendPitch}) => {
         if (!locked && lastMax > octaveSpread.max)
             setOctaveSpread({min: octaveSpread.min, max: lastMax});
 
-    }, [locked]);
+    }, [locked, lastMax, octaveSpread.max, octaveSpread.min]);
 
     useEffect(() => {
         setRange(`${octaveSpread.min}-${octaveSpread.max}`);
-        console.clear();
-        console.log(octaveSpread);
-
         sendPitch({pitch: activePitch, min: octaveSpread.min, max: octaveSpread.max});
-    }, [octaveSpread]);
+    }, [octaveSpread, activePitch, sendPitch]);
 
     const maxSwitches = (l) => {
         if (l) return;
@@ -60,7 +58,11 @@ const PitchArea = ({sendPitch}) => {
         <div className="selector">
             {pitches.map((p) => {
                 return (
-                    <div onClick={() => {setActivePitch(p); sendPitch({pitch: p, min: octaveSpread.min, max: octaveSpread.max});}} className={activePitch === p ? "btn-pitch btn-pitch-active" : "btn-pitch"}>{p}</div>
+                    <div key={p} onClick={() => {
+                        setActivePitch(p); sendPitch({pitch: p, min: octaveSpread.min, max: octaveSpread.max});
+                    }} 
+                    
+                    className={activePitch === p ? "btn-pitch btn-pitch-active" : "btn-pitch"}>{p}</div>
                 );
             })}
         </div>

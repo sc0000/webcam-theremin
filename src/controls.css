@@ -4,14 +4,71 @@
 }
 
 .control-buttons {
-    display: grid;
+    display: flex;
+    flex-wrap: nowrap;
     flex-direction: column;
     grid-template-columns: auto;
+    justify-content: center;
+    margin-top: 0;
+    width: 100%;
+}
+
+.control-buttons > .btn {
+    font-size: 0.7rem;
+}
+
+.button-outer {
+    margin-bottom: 0rem;
+    font-size: 0.75rem;
+}
+
+.players-outer {
+    display: grid;
     justify-content: center;
 }
 
 .shapes {
+
+    display: flex;
+    flex-direction: column;
+    font-size: 0.7rem;
+    margin-bottom: 0.7rem;
+    width: 100%;
+}
+
+.shapes-all {
     display: grid;
-    grid-template-columns: auto auto;
-    font-size: 0.8rem;
+    flex-wrap: nowrap;
+    justify-content: center;
+    border-top: 3px solid var(--color-1);
+    padding-top: 1rem;
+    /* margin-top: 1px; */
+    border-bottom: 3px solid var(--color-1);
+    padding-bottom: 1rem;
+
+    width: 100%;
+}
+
+.fingers {
+    display: flex;
+    width: max-content;
+    justify-content: center;
+    /* margin-left: 5rem;
+    margin-right: 5rem; */
+}
+
+.shapes-thumb {
+    margin-top: 7rem;
+}
+
+.shapes-index {
+    margin-top: 1.8rem;
+}
+
+.shapes-ring {
+    margin-top: 1.8rem;
+}
+
+.shapes-pinky {
+    margin-top: 4rem;
 }
