@@ -193,7 +193,7 @@ const Hand = () => {
             className="btn btn-hand" onClick={() => {setNum(num - 1)}}>-</div>
         </div>
 
-        <h3>Hand</h3>
+        <h3>BROWSER THEREMIN 3000</h3>
         
       </div>
       

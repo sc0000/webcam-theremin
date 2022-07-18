@@ -7,7 +7,6 @@ const PitchArea = ({sendPitch}) => {
     const pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
     const [activePitch, setActivePitch] = useState(pitches[randomInt(0, 11)]);
     
-
     const [octaveSpread, setOctaveSpread] = useState(() => {
         const init = randomInt(1, 8);
         return {min: init, max: init};

@@ -3,52 +3,84 @@ import audio from './Audio'
 import './'
 import { randomInt } from './utilities';
 
-const Dropdown = ({iterator, activeDropdown, sendActivation}) => {
+const Dropdown = ({iterator, activeDropdown, lastWaveform, newWaveform, sendActivation, sendLastWaveform, sendNewWaveform, assignmentMode}) => {
   const [open, setOpen] = useState(false);
+  const [className, setClassName] = useState("btn btn-controls");
+  const waveforms = ['square', 'sine', 'triangle', 'sawtooth'];
+  const [activeWaveform, setActiveWaveform] = useState(waveforms[randomInt(0, 3)]);
+
+  useEffect(() => {
+    audio.oscillators[iterator].type = activeWaveform;
+    setOpen(false);
+  }, [activeWaveform]);
 
   useEffect(() => {
     if (activeDropdown != iterator) setOpen(false);
   }, [activeDropdown]);
-  // if (activeDropdown != iterator) setOpen(false);
-
-  // Wave shape
-  const shapes = ['square', 'sine', 'triangle', 'sawtooth'];
-  const [activeShape, setActiveShape] = useState(shapes[randomInt(0, 3)]);
 
   useEffect(() => {
-    audio.oscillators[iterator].type = activeShape;
-    setOpen(false);
-  }, [activeShape]);
+    if ((lastWaveform === activeWaveform && assignmentMode === "all of type") ||
+        (lastWaveform !== "" && assignmentMode === "all")) {
+          setClassName("btn btn-controls btn-controls-active");
+        }
+
+    else if (lastWaveform === "") setClassName("btn btn-controls");
+  }, [lastWaveform]);
 
   useEffect(() => {
-    if (open)
+    if ((assignmentMode === "all of type" && activeWaveform === lastWaveform) ||
+        (assignmentMode === "all"))
+          setActiveWaveform(newWaveform);
+  }, [newWaveform]);
+
+  useEffect(() => {
+    if (assignmentMode.substring(0, 6) === "random")
+      setActiveWaveform(waveforms[randomInt(0, 3)]);
+  }, [assignmentMode]);
+
+  useEffect(() => {
+    if (open) {
       sendActivation(iterator);
+      setClassName("btn btn-controls btn-controls-active");
+    }
+
+    else setClassName("btn btn-controls");
   }, [open]);
 
   const createSelector = () => {
     return (<div className="shapes" style={{position: "absolute", width: "max-content", backgroundColor: "#101820ff"}}>
-              {shapes.map((s) => {
+              {waveforms.map((s) => {
                   return (
-                      <div onClick={() => {setActiveShape(s)}} 
-                        className={activeShape === s ? "btn btn-controls btn-controls-active" : "btn btn-controls"}
+                      <div onClick={() => {
+                        sendLastWaveform(activeWaveform);
+                        setActiveWaveform(s);
+                        sendNewWaveform(s);
+                      }} 
+                        className={activeWaveform === s ? "btn btn-controls btn-controls-active" : "btn btn-controls"}
                         style={{margin: "3px"}}
-                        >{s.substring(0, 3)}</div>
+                        >{s.substring(0, 3)}
+                      </div>
                   );
               })}
-          </div>)
+            </div>)
   }
 
   return (
-    <div className="dropdown">
+    <div className="dropdown" onMouseLeave={() => sendLastWaveform("")}>
         <div style={{
-          padding: "0.3rem",
-          fontSize: "0.4rem",
-          margin: "0.3rem",
-        }} className={open ? "btn btn-controls btn-controls-active" : "btn btn-controls"} onClick={() => setOpen(!open)}>
-            {activeShape.substring(0, 3)}
+            padding: "0.3rem",
+            fontSize: "0.4rem",
+            margin: "0.3rem",
+          }} 
+          
+          // className={open ? "btn btn-controls btn-controls-active" : "btn btn-controls"}
+          className={className}
+          onMouseEnter={() => sendLastWaveform(activeWaveform)}
+          
+          onClick={() => setOpen(!open)}  
+          >{activeWaveform.substring(0, 3)}
         </div>
 
-        {/* {open && props.children} */}
         {open && createSelector()}
     </div>
     
