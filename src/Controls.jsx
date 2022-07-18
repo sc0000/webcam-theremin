@@ -13,7 +13,8 @@ const Controls = () => {
   const [lastWaveform, setLastWaveform] = useState("");
   const [newWaveform, setNewWaveform] = useState("");
   const [assignmentMode, setAssignmentMode] = useState("single");
-  const assignmentModes = ["single", "all of type", "all"]; // + random
+  const assignmentModes = ["single", "all of type", "all"];
+  const [randomize, setRandomize] = useState(false);
 
   const sendLastWaveform = (s) => {
     setLastWaveform(s);
@@ -46,7 +47,8 @@ const Controls = () => {
           sendActivation={sendActivation}
           sendLastWaveform={sendLastWaveform}
           sendNewWaveform={sendNewWaveform}
-          assignmentMode={assignmentMode} />
+          assignmentMode={assignmentMode} 
+          randomize={randomize} />
       );
     }
 
@@ -93,8 +95,8 @@ const Controls = () => {
               <div className="btn btn-controls"
                 onClick={() => {
                   const lastMode = assignmentMode;
-                  setAssignmentMode("random"); 
-                  setTimeout(() => setAssignmentMode(lastMode), 0)}}
+                  setRandomize(true); 
+                  setTimeout(() => setRandomize(false), 0)}}
                   >rand</div>
             </div>
           </div>
@@ -120,7 +122,8 @@ const Controls = () => {
                     sendActivation={sendActivation}
                     sendLastWaveform={sendLastWaveform}
                     sendNewWaveform={sendNewWaveform}
-                    assignmentMode={assignmentMode} />
+                    assignmentMode={assignmentMode}
+                    randomize={randomize} />
                   </div>
                   
                 </div>

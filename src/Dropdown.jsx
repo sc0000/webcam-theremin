@@ -3,7 +3,7 @@ import audio from './Audio'
 import './'
 import { randomInt } from './utilities';
 
-const Dropdown = ({iterator, activeDropdown, lastWaveform, newWaveform, sendActivation, sendLastWaveform, sendNewWaveform, assignmentMode}) => {
+const Dropdown = ({iterator, activeDropdown, lastWaveform, newWaveform, sendActivation, sendLastWaveform, sendNewWaveform, assignmentMode, randomize}) => {
   const [open, setOpen] = useState(false);
   const [className, setClassName] = useState("btn btn-controls");
   const waveforms = ['square', 'sine', 'triangle', 'sawtooth'];
@@ -34,9 +34,9 @@ const Dropdown = ({iterator, activeDropdown, lastWaveform, newWaveform, sendActi
   }, [newWaveform]);
 
   useEffect(() => {
-    if (assignmentMode.substring(0, 6) === "random")
+    if (randomize)
       setActiveWaveform(waveforms[randomInt(0, 3)]);
-  }, [assignmentMode]);
+  }, [randomize]);
 
   useEffect(() => {
     if (open) {
