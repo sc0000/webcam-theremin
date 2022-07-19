@@ -43,10 +43,15 @@ const PitchArea = ({sendPitch}) => {
         else {
             return (
                 <div>
-                    <div className="btn-pitch" onClick={() => setOctaveSpread({min: octaveSpread.min, max: octaveSpread.max + 1})}>+</div>
                     <div className="btn-pitch" onClick={() => setOctaveSpread({
-                        min: (octaveSpread.min >= octaveSpread.max ? octaveSpread.min - 1 : octaveSpread.min), 
-                        max: octaveSpread.max - 1})}>-</div>
+                        min: octaveSpread.min, 
+                        max: octaveSpread.max + 1})}
+                    >+</div>
+
+                    <div className="btn-pitch" onClick={() => setOctaveSpread({
+                        min: (octaveSpread.min >= octaveSpread.max - 1 ? octaveSpread.max - 1 : octaveSpread.min), 
+                        max: octaveSpread.max - 1})}
+                    >-</div>
                 </div>
             )
         }

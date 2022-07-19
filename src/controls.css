@@ -39,9 +39,17 @@
 }
 
 .players-outer {
-    display: grid;
-    justify-content: center;
+    /* width: 100%; */
+    /* display: grid;
+    justify-content: center; */
     padding-top: 6px;
+    padding-left: 9px;
+    padding-right: 9px;
+}
+
+.players {
+    width: 100%;
+    
 }
 
 .shapes-options {
@@ -60,7 +68,7 @@
 
 .shapes-options-outer {
     /* border-top: 3px solid var(--color-1); */
-    padding-top: 3px;
+    padding-top: 6px;
     border-top: 3px solid var(--color-1);
     /* padding-bottom: 3px; */
 }

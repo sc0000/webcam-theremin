@@ -13,7 +13,7 @@ class Audio {
 
         for (let i = 0; i < 21; ++i) {
             const osc = new Tone.Oscillator(Math.random() * 880, 'square').connect(this.recorder).toDestination();
-            osc.volume.value = -48;
+            osc.volume.value = -30;
             this.oscillators.push(osc);
           }
 

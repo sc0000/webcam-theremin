@@ -35,7 +35,7 @@ const Hand = () => {
     // Loop and detect hands
     setInterval(() => {
       detect(net);
-    }, 50);
+    }, 20);
   }
   
   const detect = async (net) => {
@@ -58,8 +58,8 @@ const Hand = () => {
         if (coordinates.length === 0) {
           for (let i = 0; i < 21; ++i) {
             const c = {
-              x: 0,
-              y: 0,
+              x: canvasRef.current.clientWidth / 2,
+              y: canvasRef.current.clientHeight / 2,
               size: 8,
               angle: 2 * Math.PI * Math.random(), 
             }
@@ -115,7 +115,7 @@ const Hand = () => {
             }
           }
 
-          audio.oscillators[i].volume.value = scale(coordinates[i].x, [0, canvasRef.current.width], [-64, -48]);
+          audio.oscillators[i].volume.value = scale(coordinates[i].x, [0, canvasRef.current.width], [-48, -12]);
         }
       });
     }
@@ -136,7 +136,7 @@ const Hand = () => {
         updatePitch(i);
 
         // TODO: Add to function
-        audio.oscillators[i].volume.value = scale(coordinates[i].x, [0, canvasRef.current.width], [-64, -48]);
+        audio.oscillators[i].volume.value = scale(coordinates[i].x, [0, canvasRef.current.width], [-48, -12]);
       }
     }
   }

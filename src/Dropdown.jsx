@@ -51,7 +51,7 @@ const Dropdown = ({iterator, activeDropdown, lastWaveform, newWaveform, sendActi
     return (<div className="shapes" style={{position: "absolute", width: "max-content", backgroundColor: "#101820ff"}}>
               {waveforms.map((s) => {
                   return (
-                      <div onClick={() => {
+                      <div key={s} onClick={() => {
                         sendLastWaveform(activeWaveform);
                         setActiveWaveform(s);
                         sendNewWaveform(s);

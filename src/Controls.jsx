@@ -4,6 +4,7 @@ import audio from './Audio'
 import './controls.css'
 import { randomInt } from './utilities'
 import Dropdown from './Dropdown'
+import Slider from './Slider'
 
 const Controls = () => {
   const [startButton, setStartButton] = useState('start audio');
@@ -24,7 +25,7 @@ const Controls = () => {
     setNewWaveform(s);
   }
 
-  useEffect(() => {console.log({lastWaveform, newWaveform})}, [lastWaveform, newWaveform]);
+  // useEffect(() => {console.log({lastWaveform, newWaveform})}, [lastWaveform, newWaveform]);
 
   const sendActivation = (i) => {
     setActiveDropdown(i);
@@ -39,7 +40,7 @@ const Controls = () => {
 
     for (let i = 0; i < 4; ++i) {
       nodes.push(
-        <Dropdown key={i+30} 
+        <Dropdown key={i} 
           iterator={firstIterator - i} 
           activeDropdown={activeDropdown}
           lastWaveform={lastWaveform}
@@ -61,7 +62,7 @@ const Controls = () => {
 
     for (let i = 0; i < n; ++i) {
       players.push(
-        <Player key={i*10} i={i} />
+        <Player key={i} i={i} />
       )
     }
 
@@ -80,6 +81,10 @@ const Controls = () => {
               >{startButton}
             </div>
           </div>
+
+          {/* <div>
+            <Slider live={true}/>
+          </div> */}
 
           <div className="shapes-options-outer" style={{display: "flex", justifyContent: "center"}}>
             <div className="shapes-options">
@@ -141,7 +146,7 @@ const Controls = () => {
 
           <div className="players-outer">
             <div className="players">
-              {createPlayers(6)}
+              {createPlayers(7)}
             </div>
           </div>
         </div>
