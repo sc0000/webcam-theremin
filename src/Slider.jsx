@@ -6,7 +6,7 @@ import { scale } from './utilities'
 
 // TODO: Solve: releasing mouse outside of component
 
-const Slider = ({live, iterator}) => {
+const Slider = ({micro, iterator}) => {
     let innerRef = useRef(null);
     let handleRef = useRef(null);
     const [hold, setHold] = useState(false);
@@ -40,8 +40,14 @@ const Slider = ({live, iterator}) => {
             (currentX < maxX)) {
             handleRef.current.style.transform = `translateX(${offset}px)`;
 
-            if (audio.players[iterator]) {
+            if (iterator && audio.players[iterator]) {
                 audio.players[iterator].volume.value = scale(currentX, [minX, maxX], [-12, 12]);
+            }
+
+            if (micro) {
+                // TODO: Find a WAY better way to do this! (log scaling for starters)
+                audio.microtonalSpread = scale(currentX, [minX, maxX], [1000, 1]);
+                console.log(audio.microtonalSpread);
             }
         }
     }, [offset]);

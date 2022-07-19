@@ -21,6 +21,8 @@ class Audio {
             min: 3, 
             max: 6
         };
+
+        this.microtonalSpread = 1000;
     }
 
     start() {
@@ -62,6 +64,12 @@ class Audio {
     updatePitch(osc, targetPitch) {
         // TODO: Find audio appropriate interpolation function
         osc.frequency.value = lerp(osc.frequency.value, targetPitch, 0.1);
+    }
+
+    toFrequency(note) {
+        // console.clear();
+        // console.log(freq);
+        return Tone.Frequency(note).toFrequency();
     }
 }
 

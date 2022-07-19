@@ -31,9 +31,9 @@ const Controls = () => {
     setActiveDropdown(i);
   }
 
-  useEffect(() => {
-    console.log(activeDropdown);
-  }, [activeDropdown]);
+  // useEffect(() => {
+  //   console.log(activeDropdown);
+  // }, [activeDropdown]);
 
   const createNodes = (firstIterator) => {
     const nodes = [];
@@ -81,10 +81,6 @@ const Controls = () => {
               >{startButton}
             </div>
           </div>
-
-          {/* <div>
-            <Slider live={true}/>
-          </div> */}
 
           <div className="shapes-options-outer" style={{display: "flex", justifyContent: "center"}}>
             <div className="shapes-options">
@@ -142,6 +138,13 @@ const Controls = () => {
                 </div>
 
               </div>    
+          </div>
+
+          <div className="microtonal">
+            <h5>microtonal deviations</h5>
+            <div style={{padding: "3px", height: "32px"}}>
+              <Slider micro={true}/>
+            </div>
           </div>
 
           <div className="players-outer">

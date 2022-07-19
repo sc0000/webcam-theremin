@@ -7,7 +7,7 @@ import { HandDetector } from '@tensorflow-models/handpose/dist/hand'
 import { rand } from '@tensorflow/tfjs'
 
 import './hand.css'
-import { scale, lerp, fixDPI, randomInt, pitches, heightVals } from './utilities'
+import { scale, lerp, fixDPI, randomInt, pitches, pitchAreas } from './utilities'
 import audio from './Audio'
 // import Dropdown from './Dropdown'
 import PitchArea from './PitchArea'
@@ -97,6 +97,7 @@ const Hand = () => {
           coordinates[i].y = lerp(coordinates[i].y, targetY, 0.08);
 
           const targetSize = scale(Math.abs(landmarks[i][2]), [0, 80], [2, 32]);
+          // const zMicro = scale(Math.abs(landmarks[i][2]), [0, 80], [2, 1000]);
           coordinates[i].size = lerp(coordinates[i].size, targetSize, 0.01);
           
           ctx.fillRect(coordinates[i].x,  coordinates[i].y, coordinates[i].size, coordinates[i].size);          
@@ -105,10 +106,17 @@ const Hand = () => {
           // Update corresponding oscillator
           //
 
-          for (let j = 0; j < heightVals.length; ++j) {
-            if (coordinates[i].y > heightVals[j]) {
+          for (let j = 0; j < pitchAreas.length; ++j) {
+            if (coordinates[i].y > pitchAreas[j].y) {
+              const note = `${pitches[j].pitch}${randomInt(pitches[j].min, pitches[j].max)}`;
+              
+              let freq = audio.toFrequency(note);
+              freq += scale(coordinates[i].y, 
+                [pitchAreas[j].y, pitchAreas[j].y + pitchAreas[j].height], 
+                [freq / audio.microtonalSpread, -freq / audio.microtonalSpread]);
+             
               audio.oscillators[i].set({
-                frequency: `${pitches[j].pitch}${randomInt(pitches[j].min, pitches[j].max)}`,
+                frequency: freq,
                 });
             }
           }
@@ -122,7 +130,7 @@ const Hand = () => {
       for (let i = 0; i < 21; ++i) {
         coordinates[i].angle += Math.PI * 0.005;
 
-        const targetX = (canvasRef.current.width / 1.6) - Math.sin(coordinates[i].angle) * 300;
+        const targetX = (canvasRef.current.width / 2) - Math.sin(coordinates[i].angle) * 300;
         const targetY = (canvasRef.current.height / 2) - Math.cos(coordinates[i].angle) * 300;
 
         coordinates[i].x = lerp(coordinates[i].x, targetX, 0.08);
@@ -148,9 +156,9 @@ const Hand = () => {
   runHandpose();
 
   useEffect(() => {
-    heightVals.splice(0, heightVals.length);
+    pitchAreas.splice(0, pitchAreas.length);
     document.querySelectorAll('.subdiv').forEach((s) => {
-      heightVals.push(s.getBoundingClientRect().y);
+      pitchAreas.push(s.getBoundingClientRect());
     });
     
   }, [num]);

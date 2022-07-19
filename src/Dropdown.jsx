@@ -48,7 +48,7 @@ const Dropdown = ({iterator, activeDropdown, lastWaveform, newWaveform, sendActi
   }, [open]);
 
   const createSelector = () => {
-    return (<div className="shapes" style={{position: "absolute", width: "max-content", backgroundColor: "#101820ff"}}>
+    return (<div className="shapes" style={{position: "absolute", width: "max-content", backgroundColor: "#101820ff", zIndex: "999"}}>
               {waveforms.map((s) => {
                   return (
                       <div key={s} onClick={() => {

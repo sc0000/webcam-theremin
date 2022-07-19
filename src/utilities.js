@@ -51,5 +51,5 @@ export const randomInt = (min, max) => {
 }
 
 // TODO: Move both into Audio.js as one array of objects!
-export let heightVals = [];
+export let pitchAreas = [];
 export let pitches = [];
