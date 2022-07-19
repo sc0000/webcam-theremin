@@ -110,8 +110,6 @@ const Hand = () => {
               audio.oscillators[i].set({
                 frequency: `${pitches[j].pitch}${randomInt(pitches[j].min, pitches[j].max)}`,
                 });
-
-              // console.log(`${pitches[j].pitch}${randomInt(pitches[j].min, pitches[j].max)}`);
             }
           }
 
@@ -154,9 +152,6 @@ const Hand = () => {
     document.querySelectorAll('.subdiv').forEach((s) => {
       heightVals.push(s.getBoundingClientRect().y);
     });
-
-    // console.clear();
-    // console.log(heightVals);
     
   }, [num]);
 

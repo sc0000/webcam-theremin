@@ -22,17 +22,12 @@ const Slider = ({live, iterator}) => {
     }, [hold]);
 
     const handleMove = (e) => {
-        if (hold)
-            setOffset(e.pageX - startX);
-            // console.log(offset);
-        
+        if (hold) setOffset(e.pageX - startX);
     }
 
     const handleUp = (e) => {
-        // setStartX(e.pageX);
         setOffset(0);
         setHold(false);
-        // setOffset(e.pageX);
     }
 
     useEffect(() => {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { randomInt } from './utilities';
 
-// TODO: Add boundaries for octave spread w/ greyed out buttons!
+// TODO: Update style when reaching boundaries (greyed out buttons)
 
 const PitchArea = ({sendPitch}) => {
     const pitches = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
@@ -30,7 +30,7 @@ const PitchArea = ({sendPitch}) => {
         if (!locked && lastMax > octaveSpread.max)
             setOctaveSpread({min: octaveSpread.min, max: lastMax});
 
-    }, [locked, lastMax, octaveSpread.max, octaveSpread.min]);
+    }, [locked]);
 
     useEffect(() => {
         setRange(`${octaveSpread.min}-${octaveSpread.max}`);
@@ -43,14 +43,24 @@ const PitchArea = ({sendPitch}) => {
         else {
             return (
                 <div>
-                    <div className="btn-pitch" onClick={() => setOctaveSpread({
-                        min: octaveSpread.min, 
-                        max: octaveSpread.max + 1})}
+                    <div className="btn-pitch" onClick={() => {
+                        if (octaveSpread.max < 15)
+                            setOctaveSpread({
+                                min: octaveSpread.min, 
+                                max: octaveSpread.max + 1}
+                            );
+                        }
+                    }
                     >+</div>
 
-                    <div className="btn-pitch" onClick={() => setOctaveSpread({
-                        min: (octaveSpread.min >= octaveSpread.max - 1 ? octaveSpread.max - 1 : octaveSpread.min), 
-                        max: octaveSpread.max - 1})}
+                    <div className="btn-pitch" onClick={() => {
+                        if (octaveSpread.max > 1)
+                            setOctaveSpread({
+                                min: (octaveSpread.min >= octaveSpread.max - 1 ? octaveSpread.max - 1 : octaveSpread.min), 
+                                max: octaveSpread.max - 1}
+                            );
+                        }
+                    }
                     >-</div>
                 </div>
             )
@@ -74,35 +84,41 @@ const PitchArea = ({sendPitch}) => {
         <div className="octave-spread">
             <div className="btn-pitch btn-pitch-active" style={{cursor: "default"}}>oct {locked ? octaveSpread.min : range}</div>
             <div className="btn-pitch" onClick={() => {
-                if (locked)
-                    setOctaveSpread({
-                        min: octaveSpread.min + 1, 
-                        max: octaveSpread.min + 1
-                    });
+                    if (octaveSpread.min < 15) {
+                        if (locked)
+                            setOctaveSpread({
+                                min: octaveSpread.min + 1, 
+                                max: octaveSpread.min + 1
+                            });
 
-                else 
-                    setOctaveSpread({
-                        min: octaveSpread.min + 1, 
-                        max: (octaveSpread.max <= octaveSpread.min ? octaveSpread.min + 1 : octaveSpread.max)
-                    });
+                        else 
+                            setOctaveSpread({
+                                min: octaveSpread.min + 1, 
+                                max: (octaveSpread.max <= octaveSpread.min ? octaveSpread.min + 1 : octaveSpread.max)
+                            });
+                    }
                 }
             }>+</div>
 
             <div className="btn-pitch" onClick={() => {
-                if (locked)
-                    setOctaveSpread({
-                        min: octaveSpread.min - 1, 
-                        max: octaveSpread.min - 1
-                    });
+                    if (octaveSpread.min > 1) {
+                        if (locked)
+                            setOctaveSpread({
+                                min: octaveSpread.min - 1, 
+                                max: octaveSpread.min - 1
+                            });
 
-                else 
-                    setOctaveSpread({
-                        min: octaveSpread.min - 1, 
-                        max: octaveSpread.max
-                    });
+                        else 
+                            setOctaveSpread({
+                                min: octaveSpread.min - 1, 
+                                max: octaveSpread.max
+                            });
+                    }
                 }
             }>-</div>
+
             <div>{maxSwitches(locked)}</div>
+
             <div className="btn-pitch" onClick={() => setLocked(!locked)}>{locked ? "spread" : "unison"}</div>
         </div>
     </div>
